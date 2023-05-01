@@ -16,6 +16,9 @@
 #include "ast/AssignmentStatement.h"
 #include "ast/PrintStatement.h"
 #include "ast/ValueExpression.h"
+#include "ast/ConstantExpression.h"
+#include "ast/ConditionalExpression.h"
+#include "ast/IfStatement.h"
 
 namespace parser {
 
@@ -29,7 +32,32 @@ namespace parser {
         // START PARSING EXPRESSIONS ******
 
         Expression * expression() {
-            return additive();
+            return conditional();
+        }
+
+        Expression *conditional() {
+            Expression *result = additive();
+
+            while (true) {
+                if (match(TokenType::ASSIGN)) {
+                    ConditionalExpression *expr = new ConditionalExpression('=', result, additive());
+                    result = expr;
+                    continue;
+                }
+                if (match(TokenType::LT)) {
+                    ConditionalExpression *expr = new ConditionalExpression('<', result, additive());
+                    result = expr;
+                    continue;
+                }
+                if (match(TokenType::GT)) {
+                    ConditionalExpression *expr = new ConditionalExpression('>', result, additive());
+                    result = expr;
+                    continue;
+                }
+                break;
+            }
+
+            return result;
         }
 
 
@@ -135,6 +163,7 @@ namespace parser {
 
         Statement *statement() {
             if (match(TokenType::PRINT)) return new PrintStatement(expression());
+            if (match(TokenType::IF)) return ifElse();
             return assignmentStatement();
         }
 
@@ -147,6 +176,15 @@ namespace parser {
                 return new AssignmentStatement(variable, expression());
             }
             throw std::runtime_error("Unknown statement");
+        }
+
+        Statement *ifElse() {
+            // IF STATEMENT ELSE STATEMENT
+            Expression *condition = expression();
+            Statement *ifStatement = statement();
+            Statement *elseStatement = nullptr;
+            if (match(TokenType::ELSE)) elseStatement = statement();
+            return new IfStatement(condition, ifStatement, elseStatement);
         }
 
         // END PARSING STATEMENTS *****

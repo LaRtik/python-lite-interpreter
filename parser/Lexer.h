@@ -12,7 +12,7 @@
 namespace parser {
 
     class Lexer {
-        std::string OPERATOR_CHARS = "+-*/()=";
+        std::string OPERATOR_CHARS = "+-*/()=<>";
         std::vector <TokenType> OPERATOR_TOKENS {
             TokenType::PLUS,
             TokenType::MINUS,
@@ -21,6 +21,8 @@ namespace parser {
             TokenType::LPAREN,
             TokenType::RPAREN,
             TokenType::ASSIGN,
+            TokenType::LT,
+            TokenType::GT
         };
         std::string input;
         std::vector <Token> tokens;
@@ -83,6 +85,8 @@ namespace parser {
                 current = next();
             }
             if (buffer == "print") addToken(TokenType::PRINT);
+            else if (buffer == "if") addToken(TokenType::IF);
+            else if (buffer == "else") addToken(TokenType::ELSE);
             else addToken(TokenType::WORD, buffer);
         }
 

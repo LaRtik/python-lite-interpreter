@@ -18,7 +18,7 @@ namespace parser {
         }
 
         void execute() override {
-            std::cout << expression->eval() << std::endl;
+            std::cout << expression->eval()->asString() << std::endl;
         }
 
         std::string str() override {

@@ -24,6 +24,11 @@ namespace parser {
         MINUS,
 
         ASSIGN,
+        GT,
+        LT,
+        EQ,
+        IF,
+        ELSE,
 
         LPAREN,
         RPAREN,

@@ -14,7 +14,7 @@
 
 namespace parser {
     class Variables {
-        inline static NumberValue *NULL_NUMBER = new NumberValue(0);
+        inline static NumberValue *NULL_NUMBER = new NumberValue(0.0);
 
         inline static std::map <std::string, Value*> variables {
                 {"PI", new NumberValue(3.14)}

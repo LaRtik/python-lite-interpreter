@@ -17,6 +17,10 @@ namespace parser {
             this->value = value;
         }
 
+    public: NumberValue(bool value) {
+            this->value = value ? 1 : 0;
+        }
+
         double asDouble() override {
             return value;
         }
