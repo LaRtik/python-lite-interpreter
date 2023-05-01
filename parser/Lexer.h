@@ -82,7 +82,31 @@ namespace parser {
                 buffer += current;
                 current = next();
             }
-            addToken(TokenType::WORD, buffer);
+            if (buffer == "print") addToken(TokenType::PRINT);
+            else addToken(TokenType::WORD, buffer);
+        }
+
+        void tokenizeString() {
+            std::string buffer;
+            next();
+            char current = peek(0);
+            while (true) {
+                if (current == '\\') {
+                    current = next();
+                    switch (current) {
+                        case '"': current = next(); buffer += '"'; break;
+                        case 'n': current = next(); buffer += '\n'; break;
+                        case 't': current = next(); buffer += '\t'; break;
+                    }
+                    buffer += '\\';
+                    continue;
+                }
+                if (current == '"') break;
+                buffer += current;
+                current = next();
+            }
+            next();
+            addToken(TokenType::STR, buffer);
         }
 
         void tokenizeOperator() {
@@ -97,6 +121,7 @@ namespace parser {
                 if (std::isdigit(current)) tokenizeNumber();
                 else if (std::isalpha(current)) tokenizeWord();
                 else if (OPERATOR_CHARS.find(current) != std::string::npos) tokenizeOperator();
+                else if (current == '"') tokenizeString();
                 else next(); // spaces
             }
             return tokens;

@@ -18,9 +18,9 @@ namespace parser {
             this->operation = operation;
         }
 
-        double eval() const override {
+        Value *eval() const override {
             switch (operation) {
-                case '-': return -expr1->eval();
+                case '-': return new NumberValue(-expr1->eval()->asDouble());
                 default:
                     return expr1->eval();
             }

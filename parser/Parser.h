@@ -8,12 +8,14 @@
 #include <vector>
 #include "Token.h"
 #include "ast/Expression.h"
-#include "ast/NumberExpression.h"
+#include "ast/StringValue.h"
 #include "ast/BinaryExpression.h"
 #include "ast/UnaryExpression.h"
 #include "ast/ConstantExpression.h"
 #include "ast/Statement.h"
 #include "ast/AssignmentStatement.h"
+#include "ast/PrintStatement.h"
+#include "ast/ValueExpression.h"
 
 namespace parser {
 
@@ -84,13 +86,17 @@ namespace parser {
             Token current = get(0);
             if (match(TokenType::NUMBER))
             {
-                return new NumberExpression(std::stod(current.getText()));
+                return new ValueExpression(std::stod(current.getText()));
             }
             if (match(TokenType::LPAREN))
             {
                 Expression *result = expression();
                 match(TokenType::RPAREN);
                 return result;
+            }
+            if (match(TokenType::STR))
+            {
+                return new ValueExpression(current.getText());
             }
             if (match(TokenType::WORD))
             {
@@ -128,6 +134,7 @@ namespace parser {
         // PARSING STATEMENTS *****
 
         Statement *statement() {
+            if (match(TokenType::PRINT)) return new PrintStatement(expression());
             return assignmentStatement();
         }
 

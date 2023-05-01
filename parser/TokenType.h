@@ -10,8 +10,13 @@
 namespace parser {
 
     enum class TokenType {
+        // types
         NUMBER,
         WORD,
+        STR,
+
+        // keywords
+        PRINT,
 
         MUL,
         DIV,
@@ -56,6 +61,12 @@ namespace parser {
                 break;
             case TokenType::ASSIGN:
                 os << "ASSIGN";
+                break;
+            case TokenType::PRINT:
+                os << "PRINT";
+                break;
+            case TokenType::STR:
+                os << "STR";
                 break;
         }
         return os;

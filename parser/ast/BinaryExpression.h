@@ -8,6 +8,7 @@
 #include <ostream>
 #include <string>
 #include "Expression.h"
+#include "NumberValue.h"
 
 namespace parser {
 
@@ -21,13 +22,17 @@ namespace parser {
             this->operation = operation;
         }
 
-        double eval() const override {
+        Value *eval() const override {
+            // todo: add string concatenation
+
+            double number1 = expr1->eval()->asDouble();
+            double number2 = expr2->eval()->asDouble();
             switch (operation) {
-                case '-': return expr1->eval() - expr2->eval();
-                case '*': return expr1->eval() * expr2->eval();
-                case '/': return expr1->eval() / expr2->eval();
+                case '-': return new NumberValue(number1 - number2);
+                case '*': return new NumberValue(number1 * number2);
+                case '/': return new NumberValue(number1 / number2);
                 default:
-                    return expr1->eval() + expr2->eval();
+                    return new NumberValue(number1 + number2);
             }
         }
 
@@ -38,7 +43,7 @@ namespace parser {
         }
 
         std::string str() const override {
-            return std::to_string(expr1->eval()) + " " + operation + " " + std::to_string(expr2->eval());
+            return expr1->str() + " " + operation + " " + expr2->str();
         }
 
 

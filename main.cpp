@@ -1,9 +1,13 @@
 #include <iostream>
+#include <fstream>
 #include "parser/Lexer.h"
 #include "parser/Parser.h"
 
 int main() {
-    std::string text = "word = PI + 3.14 * 2\nword2 = PI * word";
+    std::fstream fin("../input.txt");
+    std::string text;
+    std::string s;
+    while (getline(fin, s)) text += s + '\n';
     std::cout << text << std::endl;
     parser::Lexer lexer = parser::Lexer(text);
     auto tokens = lexer.tokenize();

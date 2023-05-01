@@ -6,14 +6,18 @@
 #define PYTHON_LITE_2_CONSTANTEXPRESSION_H
 
 #include "Expression.h"
+#include "NumberValue.h"
 #include <iostream>
 #include <map>
 #include <utility>
+#include <memory>
 
 namespace parser {
     class Variables {
-        inline static std::map <std::string, double> variables {
-                {"PI", 3.14}
+        inline static NumberValue *NULL_NUMBER = new NumberValue(0);
+
+        inline static std::map <std::string, Value*> variables {
+                {"PI", new NumberValue(3.14)}
         };
 
 
@@ -21,12 +25,12 @@ namespace parser {
             return Variables::variables.find(key) != Variables::variables.end();
         }
 
-    public: static double get(const std::string& key) {
-            if (!isExists(key)) return 0;
+    public: static Value * get(const std::string& key) {
+            if (!isExists(key)) return NULL_NUMBER;
             return Variables::variables[key];
         }
 
-    public: static void set(const std::string& key, double value) {
+    public: static void set(const std::string& key, Value *value) {
             variables.insert({key, value});
         }
     };
@@ -36,7 +40,7 @@ namespace parser {
     class ConstantExpression : public Expression {
         std::string name;
 
-        double eval() const override {
+        Value *eval() const override {
             if (!Variables::isExists(name))
                 throw std::runtime_error("Constant " + name + " does not exists");
             return Variables::get(name);
@@ -48,7 +52,7 @@ namespace parser {
         }
 
         std::string str() const override {
-            return name + std::to_string(Variables::get(name));
+            return name + Variables::get(name)->asString();
         }
 
     public:

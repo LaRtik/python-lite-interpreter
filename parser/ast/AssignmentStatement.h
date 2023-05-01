@@ -18,7 +18,7 @@ namespace parser {
         Expression *expression;
 
         void execute() override {
-            double result = expression->eval();
+            Value *result = expression->eval();
             Variables::set(variable, result);
         }
 
