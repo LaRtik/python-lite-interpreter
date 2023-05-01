@@ -3,7 +3,7 @@
 #include "parser/Parser.h"
 
 int main() {
-    std::string text = "PI + 3.14 * 2 * 10";
+    std::string text = "word = PI + 3.14 * 2\nword2 = PI * word";
     std::cout << text << std::endl;
     parser::Lexer lexer = parser::Lexer(text);
     auto tokens = lexer.tokenize();
@@ -11,6 +11,11 @@ int main() {
 
     parser::Parser pars = parser::Parser(tokens);
     auto expressions = pars.parse();
-    for (auto expr : expressions) std::cout << expr->str() << " " << expr->eval() << std::endl;
+    for (auto statement : expressions)
+    {
+        std::cout << statement->str() << std::endl;
+        statement->execute();
+    }
+
     return 0;
 }

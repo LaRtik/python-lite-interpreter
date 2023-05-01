@@ -9,8 +9,6 @@ namespace parser {
 
     class Expression {
 
-
-
     public:
         virtual double eval() const = 0;
         virtual std::string str() const = 0;

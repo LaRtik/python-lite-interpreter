@@ -12,6 +12,8 @@
 #include "ast/BinaryExpression.h"
 #include "ast/UnaryExpression.h"
 #include "ast/ConstantExpression.h"
+#include "ast/Statement.h"
+#include "ast/AssignmentStatement.h"
 
 namespace parser {
 
@@ -22,7 +24,7 @@ namespace parser {
         int pos = 0;
         int size = 0;
 
-        // top down parser
+        // START PARSING EXPRESSIONS ******
 
         Expression * expression() {
             return additive();
@@ -98,6 +100,8 @@ namespace parser {
             throw std::runtime_error("Unknown expression");
         }
 
+        // END PARSING EXPRESSIONS ********
+
 
         bool match(TokenType type) {
             Token current = get(0);
@@ -112,12 +116,40 @@ namespace parser {
             return tokens[position];
         }
 
+        Token consume(TokenType type) {
+            Token current = get(0);
+            if (type != current.getType())
+                throw std::runtime_error("Token " + current.getText() + " does not match token type");
+            pos++;
+            return current;
+        }
+
+
+        // PARSING STATEMENTS *****
+
+        Statement *statement() {
+            return assignmentStatement();
+        }
+
+        Statement *assignmentStatement() {
+            // WORD ASSIGN
+            Token current = get(0);
+            if (match(TokenType::WORD) && get(0).getType() == TokenType::ASSIGN) {
+                const std::string& variable = current.getText();
+                consume(TokenType::ASSIGN);
+                return new AssignmentStatement(variable, expression());
+            }
+            throw std::runtime_error("Unknown statement");
+        }
+
+        // END PARSING STATEMENTS *****
+
 
     public:
-        std::vector <Expression*> parse() {
-            std::vector <Expression*> result;
+        std::vector <Statement*> parse() {
+            std::vector <Statement*> result;
             while (!match(TokenType::EOFF)) {
-                result.push_back(expression());
+                result.push_back(statement());
             }
             return result;
         }

@@ -11,38 +11,44 @@
 #include <utility>
 
 namespace parser {
-    class Constants {
-        inline static std::map <std::string, double> constants {
+    class Variables {
+        inline static std::map <std::string, double> variables {
                 {"PI", 3.14}
         };
 
 
     public: static bool isExists(const std::string& key) {
-            return Constants::constants.find(key) != Constants::constants.end();
+            return Variables::variables.find(key) != Variables::variables.end();
         }
 
     public: static double get(const std::string& key) {
             if (!isExists(key)) return 0;
-            return Constants::constants[key];
+            return Variables::variables[key];
+        }
+
+    public: static void set(const std::string& key, double value) {
+            variables.insert({key, value});
         }
     };
+
+
 
     class ConstantExpression : public Expression {
         std::string name;
 
         double eval() const override {
-            if (!Constants::isExists(name))
+            if (!Variables::isExists(name))
                 throw std::runtime_error("Constant " + name + " does not exists");
-            return Constants::get(name);
+            return Variables::get(name);
         }
 
         friend std::ostream &operator<<(std::ostream &os, const ConstantExpression &expression) {
-            os << expression.name << " " << Constants::get(expression.name);
+            os << expression.name << " " << Variables::get(expression.name);
             return os;
         }
 
         std::string str() const override {
-            return name + std::to_string(Constants::get(name));
+            return name + std::to_string(Variables::get(name));
         }
 
     public:

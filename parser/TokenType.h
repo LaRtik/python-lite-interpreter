@@ -17,6 +17,9 @@ namespace parser {
         DIV,
         PLUS,
         MINUS,
+
+        ASSIGN,
+
         LPAREN,
         RPAREN,
 
@@ -50,6 +53,9 @@ namespace parser {
                 break;
             case TokenType::WORD:
                 os << "WORD";
+                break;
+            case TokenType::ASSIGN:
+                os << "ASSIGN";
                 break;
         }
         return os;
