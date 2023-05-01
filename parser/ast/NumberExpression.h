@@ -21,8 +21,12 @@ namespace parser {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const NumberExpression &expression) {
-            os << "NumberExpression -> " << expression.value;
+            os << expression.value;
             return os;
+        }
+
+        std::string str() const override {
+            return std::to_string(value);
         }
     };
 

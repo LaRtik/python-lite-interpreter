@@ -11,6 +11,7 @@
 #include "ast/NumberExpression.h"
 #include "ast/BinaryExpression.h"
 #include "ast/UnaryExpression.h"
+#include "ast/ConstantExpression.h"
 
 namespace parser {
 
@@ -81,8 +82,7 @@ namespace parser {
             Token current = get(0);
             if (match(TokenType::NUMBER))
             {
-                auto *expr = new NumberExpression(std::stod(current.getText()));
-                return expr;
+                return new NumberExpression(std::stod(current.getText()));
             }
             if (match(TokenType::LPAREN))
             {
@@ -90,7 +90,12 @@ namespace parser {
                 match(TokenType::RPAREN);
                 return result;
             }
-            throw std::runtime_error(&"Unknown expression at pos " [ pos]);
+            if (match(TokenType::WORD))
+            {
+                return new ConstantExpression(current.getText());
+            }
+            std::cout << "Unknown expression at pos " << pos << std::endl;
+            throw std::runtime_error("Unknown expression");
         }
 
 

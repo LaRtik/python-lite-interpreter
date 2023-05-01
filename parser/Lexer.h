@@ -26,6 +26,12 @@ namespace parser {
         int pos = 0;
         int length = 0;
 
+    public: void error(const std::string& text) const {
+            for (int i = 0; i < pos; i++) std::cout << " ";
+            std::cout << "^" << std::endl;
+            throw std::runtime_error(text + " at pos " + std::to_string(pos));
+        }
+
 
         void addToken(TokenType type) {
             addToken(type, "");
@@ -56,11 +62,26 @@ namespace parser {
         void tokenizeNumber() {
             std::string buffer;
             char current = peek(0);
-            while (isdigit(current)) {
+            while (true) {
+                if (current == '.') {
+                    if (buffer.find('.') != std::string::npos) error("Invalid float number");
+                }
+                else if (!std::isdigit(current)) break;
                 buffer += current;
                 current = next();
             }
             addToken(TokenType::NUMBER, buffer);
+        }
+
+        void tokenizeWord() {
+            std::string buffer;
+            char current = peek(0);
+            while (true) {
+                if (!std::isalpha(current) && !std::isdigit(current) && current != '_') break;
+                buffer += current;
+                current = next();
+            }
+            addToken(TokenType::WORD, buffer);
         }
 
         void tokenizeOperator() {
@@ -73,6 +94,7 @@ namespace parser {
             while (pos < length){
                 char current = peek(0);
                 if (std::isdigit(current)) tokenizeNumber();
+                else if (std::isalpha(current)) tokenizeWord();
                 else if (OPERATOR_CHARS.find(current) != std::string::npos) tokenizeOperator();
                 else next(); // spaces
             }

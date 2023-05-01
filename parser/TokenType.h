@@ -11,6 +11,7 @@ namespace parser {
 
     enum class TokenType {
         NUMBER,
+        WORD,
 
         MUL,
         DIV,
@@ -46,6 +47,9 @@ namespace parser {
                 break;
             case TokenType::RPAREN:
                 os << "RPAREN";
+                break;
+            case TokenType::WORD:
+                os << "WORD";
                 break;
         }
         return os;

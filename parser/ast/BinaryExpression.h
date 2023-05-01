@@ -6,6 +6,7 @@
 #define PYTHON_LITE_2_BINARYEXPRESSION_H
 
 #include <ostream>
+#include <string>
 #include "Expression.h"
 
 namespace parser {
@@ -34,6 +35,10 @@ namespace parser {
             os << "BinaryExpression -> " << " expr1: " << expression.expr1->eval() << " expr2: "
                << expression.expr2->eval() << " operation: " << expression.operation;
             return os;
+        }
+
+        std::string str() const override {
+            return std::to_string(expr1->eval()) + " " + operation + " " + std::to_string(expr2->eval());
         }
 
 

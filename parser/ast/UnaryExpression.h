@@ -26,11 +26,9 @@ namespace parser {
             }
         }
 
-
-
-
-
-
+        std::string str() const override {
+            return operation + expr1->str();
+        }
     };
 
 } // parser
