@@ -13,7 +13,7 @@
 namespace parser {
 
     class Lexer {
-        std::string OPERATOR_CHARS = "+-*/()=<>!&|{}";
+        std::string OPERATOR_CHARS = "+-*/()=<>!&|{},";
         std::map <std::string, TokenType> OPERATORS {
                 {"+", TokenType::PLUS},
                 {"-", TokenType::MINUS},
@@ -35,6 +35,7 @@ namespace parser {
                 {"||", TokenType::BARBAR},
                 {"{", TokenType::LBRACE},
                 {"}", TokenType::RBRACE},
+                {",", TokenType::COMMA},
         };
         std::string input;
         std::vector <Token> tokens;
@@ -125,8 +126,8 @@ namespace parser {
                 buffer += current;
                 current = next();
             }
-            if (buffer == "print") addToken(TokenType::PRINT);
-            else if (buffer == "if") addToken(TokenType::IF);
+            //if (buffer == "print") addToken(TokenType::PRINT);
+            if (buffer == "if") addToken(TokenType::IF);
             else if (buffer == "else") addToken(TokenType::ELSE);
             else if (buffer == "for") addToken(TokenType::FOR);
             else if (buffer == "while") addToken(TokenType::WHILE);

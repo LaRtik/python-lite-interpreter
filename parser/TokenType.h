@@ -52,6 +52,7 @@ namespace parser {
         COLON,
         LBRACE,
         RBRACE,
+        COMMA,
     };
 
     std::ostream &operator<<(std::ostream &os, const TokenType &type) {
@@ -156,6 +157,9 @@ namespace parser {
                 break;
             case TokenType::CONTINUE:
                 os << "CONTINUE";
+                break;
+            case TokenType::COMMA:
+                os << "COMMA";
                 break;
         }
         return os;

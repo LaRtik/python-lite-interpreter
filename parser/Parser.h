@@ -21,6 +21,8 @@
 #include "ast/IfStatement.h"
 #include "ast/BlockStatement.h"
 #include "ast/WhileStatement.h"
+#include "ast/FunctionalExpression.h"
+#include "ast/FunctionStatement.h"
 
 namespace parser {
 
@@ -35,6 +37,17 @@ namespace parser {
         int current_line = 0;
 
         // START PARSING EXPRESSIONS ******
+
+        FunctionalExpression *function () {
+            std::string name = consume(TokenType::WORD).getText();
+            consume(TokenType::LPAREN);
+            auto *function = new FunctionalExpression(name);
+            while (!match(TokenType::RPAREN)) {
+                function->addArgument(expression());
+                match(TokenType::COMMA);
+            }
+            return function;
+        }
 
         Expression * expression() {
             return logical();
@@ -159,10 +172,14 @@ namespace parser {
             {
                 return new ValueExpression(current.getText());
             }
+            if (current.getType() == TokenType::WORD && get(1).getType() == TokenType::LPAREN){
+                return function();
+            }
             if (match(TokenType::WORD))
             {
                 return new ConstantExpression(current.getText());
             }
+
             switch (get(-1).getType()) {
                 case TokenType::IF:
                     std::cout << text[current_line] << std::endl;
@@ -216,7 +233,9 @@ namespace parser {
         }
 
         Statement *statement() {
-            if (match(TokenType::PRINT)) return new PrintStatement(expression());
+          //  if (match(TokenType::PRINT)) return new PrintStatement(expression());
+            if (get(0).getType() == TokenType::WORD && get(1).getType() == TokenType::LPAREN)
+                return new FunctionStatement(function());
             if (match(TokenType::IF)) return ifElse();
             if (match(TokenType::WHILE)) return whileStatement();
             if (match(TokenType::BREAK)) return new BreakStatement();
