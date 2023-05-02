@@ -34,6 +34,7 @@ namespace parser {
         IF,
         ELSE,
         FOR,
+        FORIN,
         WHILE,
         BREAK,
         CONTINUE,
@@ -176,6 +177,9 @@ namespace parser {
                 break;
             case TokenType::RBRACKET:
                 os << "RBRACKET";
+                break;
+            case TokenType::FORIN:
+                os << "FORIN";
                 break;
         }
         return os;

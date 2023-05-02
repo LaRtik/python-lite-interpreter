@@ -1,6 +1,8 @@
 def sum(a, b):
 	return a + b
 a = [1, 2, 3, "text", sum(10,15)]
+for i in range(10):
+	print(i)
 print(a)
 a[0] = 10
 print(a)

@@ -45,6 +45,20 @@ namespace parser {
         }
     };
 
+    class FUNCTION_range : public Function {
+        Value * execute(std::vector<Value*> args) override {
+            if (args.size() == 1) {
+                std::vector <Value*> arr;
+                for (int i = 0; i < (int)args[0]->asDouble(); i++) arr.push_back(new NumberValue(double(i)));
+                return new ArrayValue(arr);
+            }
+            else throw std::runtime_error("Expected 1 argument in RANGE function");
+        }
+        std::string str(int tabs = 0) override {
+            return "[FUNCTION_range (n: int)]";
+        }
+    };
+
 
 
     class Functions {
@@ -53,6 +67,7 @@ namespace parser {
                 {"sqrt", new FUNCTION_sqrt()},
                 {"print", new FUNCTION_print()},
                 {"list", new FUNCTION_list()},
+                {"range", new FUNCTION_range()},
         };
 
 

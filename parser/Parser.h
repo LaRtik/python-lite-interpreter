@@ -27,6 +27,7 @@
 #include "ast/ArrayAssignmentStatement.h"
 #include "ast/ArrayGetExpression.h"
 #include "ast/ArrayExpression.h"
+#include "ast/ForStatement.h"
 
 namespace parser {
 
@@ -285,6 +286,7 @@ namespace parser {
             if (match(TokenType::IF)) return ifElse();
             if (match(TokenType::DEF)) return functionDefine();
             if (match(TokenType::WHILE)) return whileStatement();
+            if (match(TokenType::FOR)) return forStatement();
             if (match(TokenType::BREAK)) return new BreakStatement();
             if (match(TokenType::CONTINUE)) return new ContinueStatement();
             if (match(TokenType::RETURN)) return new ReturnStatement(expression());
@@ -329,6 +331,15 @@ namespace parser {
             Expression *condition = expression();
             Statement *statement = block();
             return new WhileStatement(condition, statement);
+        }
+
+        Statement *forStatement() {
+            // FOR ELEMENT IN ARRAY
+            std::string variable = consume(TokenType::WORD).getText();
+            consume(TokenType::FORIN);
+            Expression *condition = expression();
+            Statement *statement = block();
+            return new ForStatement(variable, condition, statement);
         }
 
         Statement *ifElse() {

@@ -135,6 +135,7 @@ namespace parser {
             else if (buffer == "def") addToken(TokenType::DEF);
             else if (buffer == "while") addToken(TokenType::WHILE);
             else if (buffer == "break") addToken(TokenType::BREAK);
+            else if (buffer == "in") addToken(TokenType::FORIN);
             else if (buffer == "return") addToken(TokenType::RETURN);
             else if (buffer == "continue") addToken(TokenType::CONTINUE);
             else addToken(TokenType::WORD, buffer);

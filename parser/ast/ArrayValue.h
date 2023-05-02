@@ -32,6 +32,10 @@ namespace parser {
             throw std::runtime_error("Cannot cast array to number");
         }
 
+    public: int size() {
+            return elements.size();
+        }
+
         std::string asString() override {
             std::string result = "[";
             for (auto i : elements) result += i->asString() + ",";
