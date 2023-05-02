@@ -31,6 +31,8 @@ namespace parser {
         int pos = 0;
         int size = 0;
         int indent = 0;
+        std::vector <std::string> text;
+        int current_line = 0;
 
         // START PARSING EXPRESSIONS ******
 
@@ -161,7 +163,18 @@ namespace parser {
             {
                 return new ConstantExpression(current.getText());
             }
-            std::cout << "Unknown expression at pos " << pos << std::endl;
+            switch (get(-1).getType()) {
+                case TokenType::IF:
+                    std::cout << text[current_line] << std::endl;
+                    std::cout << "Expected STATEMENT after " << get(-1).getType() << " at pos " << pos << std::endl;
+                    throw std::runtime_error("Unknown expression");
+                case TokenType::WHILE:
+                    std::cout << text[current_line] << std::endl;
+                    std::cout << "Expected STATEMENT after " << get(-1).getType() << " at pos " << pos << std::endl;
+                    throw std::runtime_error("Unknown expression");
+            }
+            std::cout << text[current_line] << std::endl;
+            std::cout << "Unknown expression after " << get(-1).getType() << " at pos " << pos << std::endl;
             throw std::runtime_error("Unknown expression");
         }
 
@@ -219,6 +232,17 @@ namespace parser {
                 consume(TokenType::ASSIGN);
                 return new AssignmentStatement(variable, expression());
             }
+            switch (tokens[pos].getType()) {
+                case TokenType::LBRACE:
+                    std::cout << text[current_line] << std::endl;
+                    throw std::runtime_error("Unknown indentation at line " + std::to_string(current_line + 1));
+                case TokenType::LPAREN:
+                    std::cout << text[current_line - 1] << std::endl;
+                    throw std::runtime_error("Inconsistent braces at line " + std::to_string(current_line));
+                case TokenType::RPAREN:
+                    std::cout << text[current_line - 1] << std::endl;
+                    throw std::runtime_error("Inconsistent braces at line " + std::to_string(current_line));
+            }
             std::cout << tokens[pos].getType() << std::endl;
             throw std::runtime_error("Unknown statement ");
         }
@@ -231,7 +255,7 @@ namespace parser {
         }
 
         Statement *ifElse() {
-            // IF STATEMENT ELSE STATEMENT
+            // IF CONDITION {BLOCK} ELSE {BLOCK}
             Expression *condition = expression();
             Statement *ifStatement = block();
             Statement *elseStatement = nullptr;
@@ -247,13 +271,22 @@ namespace parser {
             BlockStatement *result = new BlockStatement();
             while (!match(TokenType::EOFF)) {
                 result->add(statement());
+                current_line++;
             }
             return result;
         }
 
-        Parser(std::vector <Token> tokens) {
+        Parser(std::vector <Token> tokens, std::string text) {
             this->tokens = tokens;
             size = tokens.size();
+            std::string buffer;
+            for (auto c : text) {
+                if (c == '\n') {
+                    this->text.push_back(buffer);
+                    buffer = "";
+                }
+                else buffer += c;
+            }
         }
     };
 

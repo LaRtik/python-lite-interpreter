@@ -26,9 +26,18 @@ namespace parser {
             else elseStatement->execute();
         }
 
-        std::string str() override {
-            std::string res = "if " + expression->str() + " -> " + ifStatement->str();
-            if (elseStatement) res += "\nelse -> " + elseStatement->str();
+        std::string str(int tab = 0) override {
+            std::string res;
+            for (int i = 0; i < tab; i++) res += '\t';
+            res += "[IF]\n ";
+            for (int i = 0; i < tab + 1; i++) res += '\t';
+            res += expression->str(tab + 1) + " -> " + ifStatement->str(tab + 1);
+            if (elseStatement)
+            {
+                res += "[ELSE]\n";
+                for (int i = 0; i <= tab + 1; i++) res += '\t';
+                res += elseStatement->str(tab + 1);
+            }
             return res;
         }
 

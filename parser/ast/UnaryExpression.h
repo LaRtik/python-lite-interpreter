@@ -26,8 +26,8 @@ namespace parser {
             }
         }
 
-        std::string str() const override {
-            return operation + expr1->str();
+        std::string str(int tab = 0) const override {
+            return "[UNARY] " + std::to_string(operation) + expr1->str(tab);
         }
     };
 

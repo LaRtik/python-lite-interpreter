@@ -68,8 +68,10 @@ namespace parser {
             return os;
         }
 
-        std::string str() const override {
-            return expr1->str() + " " + std::to_string(operation) + " " + expr2->str();
+        std::string str(int tab = 0) const override {
+            std::string res = "[CONDITIONAL]\n ";
+            for (int i = 0; i < tab + 1; i++) res += '\t';
+            return res + expr1->str(tab + 1) + " " + std::to_string(operation) + " " + expr2->str(tab + 1);
         }
 
 

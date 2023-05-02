@@ -13,7 +13,7 @@ namespace parser {
 
     public:
         virtual Value *eval() const = 0;
-        virtual std::string str() const = 0;
+        virtual std::string str(int tab = 0) const = 0;
 
     };
 

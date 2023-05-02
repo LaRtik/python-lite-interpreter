@@ -43,7 +43,7 @@ namespace parser {
 
         Value *eval() const override {
             if (!Variables::isExists(name))
-                throw std::runtime_error("Constant " + name + " does not exists");
+                throw std::runtime_error("Variable " + name + " does not exists");
             return Variables::get(name);
         }
 
@@ -52,8 +52,9 @@ namespace parser {
             return os;
         }
 
-        std::string str() const override {
-            return name + Variables::get(name)->asString();
+        std::string str(int tab = 0) const override {
+            std::string res = "[VARIABLE] ";
+            return res + name;
         }
 
     public:

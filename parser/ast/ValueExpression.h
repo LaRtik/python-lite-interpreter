@@ -19,8 +19,9 @@ namespace parser {
             return value;
         }
 
-        std::string str() const override {
-            return value->asString();
+        std::string str(int tab = 0) const override {
+            std::string res = "[VALUE] ";
+            return res + value->asString();
         }
 
     public:

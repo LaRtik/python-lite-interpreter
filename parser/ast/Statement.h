@@ -12,7 +12,7 @@ namespace parser {
     public:
         virtual void execute() = 0;
 
-        virtual std::string str() = 0;
+        virtual std::string str(int tab = 0) = 0;
     };
 
 } // parser

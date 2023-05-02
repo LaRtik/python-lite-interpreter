@@ -21,8 +21,10 @@ namespace parser {
             std::cout << expression->eval()->asString() << std::endl;
         }
 
-        std::string str() override {
-            return "print " + expression->str();
+        std::string str(int tab = 0) override {
+            std::string res = "[PRINT]\n ";
+            for (int i = 0; i < tab + 1; i++) res += '\t';
+            return res + expression->str(tab + 1);
         }
 
 

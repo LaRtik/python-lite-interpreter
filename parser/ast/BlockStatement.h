@@ -24,10 +24,12 @@ namespace parser {
             }
         }
 
-        std::string str() override {
-            std::string res;
-            for (auto statement : statements) res += statement->str() + "\n";
-            return res;
+        std::string str(int tab = 0) override {
+            std::string res = "[BLOCK]\n\v";
+            for (int i = 0; i < tab + 1; i++) res += '\t';
+            for (auto statement : statements) res += statement->str(tab + 1) + "\n";
+            for (int i = 0; i <= tab + 1; i++) res += '\t';
+            return res + " [ENDBLOCK]";
         }
 
     };

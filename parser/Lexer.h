@@ -68,9 +68,9 @@ namespace parser {
                     else if (indent < last_indent) {
                         for (int j = 0; j < last_indent - indent; j++) new_tokens.emplace_back(TokenType::RBRACE, "");
                     }
-                    if (i < this->tokens.size()) new_tokens.push_back(tokens[i]);
+                    if (i < this->tokens.size() && tokens[i].getType() != TokenType::COLON) new_tokens.push_back(tokens[i]);
                 }
-                else new_tokens.push_back(tokens[i]);
+                else if (tokens[i].getType() != TokenType::COLON) new_tokens.push_back(tokens[i]);
             }
             this->tokens = new_tokens;
             return tokens;
@@ -169,6 +169,28 @@ namespace parser {
             }
         }
 
+        bool lookMatch(TokenType need, TokenType block) {
+            int i = pos;
+            while (i < tokens.size()) {
+                if (tokens[i].getType() == need) return true;
+                if (tokens[i].getType() == block) return false;
+                i++;
+            }
+            return false;
+        }
+
+        void check() {
+            while (pos < tokens.size()) {
+                // CHECK COMMA BEFORE IF ELSE WHILE FOR
+                TokenType type = tokens[pos].getType();
+                if (type == TokenType::IF || type == TokenType::ELSE || type == TokenType::WHILE || type == TokenType::FOR) {
+                    if (!lookMatch(TokenType::COLON, TokenType::LBRACE)) error("Expected colon after STATEMENT");
+                }
+                pos++;
+            }
+        }
+
+
         std::vector <Token> tokenize() {
             while (pos < length){
                 char current = peek(0);
@@ -176,8 +198,8 @@ namespace parser {
                     continue;}
                 else if (current == '\t') { addToken(TokenType::TAB); pos++;
                     continue; }
-               // else if (current == ':') { addToken(TokenType::COLON); pos++;
-                //    continue; }
+                else if (current == ':') { addToken(TokenType::COLON); pos++;
+                    continue; }
                 else if (std::isdigit(current)) tokenizeNumber();
                 else if (std::isalpha(current)) tokenizeWord();
                 else if (OPERATOR_CHARS.find(current) != std::string::npos) tokenizeOperator();

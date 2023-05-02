@@ -19,8 +19,10 @@ namespace parser {
             }
         }
 
-        std::string str() override {
-            return "while " + condition->str() + " statement " + statement->str();
+        std::string str(int tab = 0) override {
+            std::string res = "[WHILE]\n ";
+            for (int i = 0; i < tab + 1; i++) res += '\t';
+            return res + condition->str(tab + 1) + " statement " + statement->str(tab + 1);
         }
 
 
