@@ -6,6 +6,8 @@
 #define PYTHON_LITE_2_WHILESTATEMENT_H
 #include "Statement.h"
 #include "Expression.h"
+#include "BreakStatement.h"
+#include "ContinueStatement.h"
 
 namespace parser {
 
@@ -15,7 +17,13 @@ namespace parser {
 
         void execute() override {
             while (condition->eval()->asDouble() != 0) {
-                statement->execute();
+                try {
+                    statement->execute();
+                } catch (BreakStatement *e) {
+                    break;
+                } catch (ContinueStatement *e) {
+                    continue;
+                }
             }
         }
 

@@ -23,7 +23,7 @@ namespace parser {
         void execute() override {
             double result = expression->eval()->asDouble();
             if (result != 0) ifStatement->execute();
-            else elseStatement->execute();
+            else if (elseStatement) elseStatement->execute();
         }
 
         std::string str(int tab = 0) override {

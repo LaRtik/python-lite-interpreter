@@ -1,2 +1,9 @@
-while:
+b = 10
+while b != 0:
 	print b
+	if b == 4:
+		b = b - 2
+		continue
+	if b == 3:
+		break
+	b = b - 1

@@ -219,6 +219,8 @@ namespace parser {
             if (match(TokenType::PRINT)) return new PrintStatement(expression());
             if (match(TokenType::IF)) return ifElse();
             if (match(TokenType::WHILE)) return whileStatement();
+            if (match(TokenType::BREAK)) return new BreakStatement();
+            if (match(TokenType::CONTINUE)) return new ContinueStatement();
             if (match(TokenType::TAB)) { indent++; return statement();}
             if (match(TokenType::EOL)) { indent = 0; return statement();}
             return assignmentStatement();

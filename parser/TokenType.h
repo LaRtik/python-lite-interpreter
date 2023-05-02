@@ -35,6 +35,8 @@ namespace parser {
         ELSE,
         FOR,
         WHILE,
+        BREAK,
+        CONTINUE,
 
         LPAREN,
         RPAREN,
@@ -148,6 +150,12 @@ namespace parser {
                 break;
             case TokenType::WHILE:
                 os << "WHILE";
+                break;
+            case TokenType::BREAK:
+                os << "BREAK";
+                break;
+            case TokenType::CONTINUE:
+                os << "CONTINUE";
                 break;
         }
         return os;
