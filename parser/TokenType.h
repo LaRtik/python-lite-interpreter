@@ -51,10 +51,12 @@ namespace parser {
         EOFF,
         TAB,
         EOL,
-        COLON,
-        LBRACE,
-        RBRACE,
-        COMMA,
+        COLON, // :
+        LBRACE, // }
+        RBRACE, // {
+        LBRACKET, // [
+        RBRACKET, // ]
+        COMMA, // ,
     };
 
     std::ostream &operator<<(std::ostream &os, const TokenType &type) {
@@ -168,6 +170,12 @@ namespace parser {
                 break;
             case TokenType::RETURN:
                 os << "RETURN";
+                break;
+            case TokenType::LBRACKET:
+                os << "LBRACKET";
+                break;
+            case TokenType::RBRACKET:
+                os << "RBRACKET";
                 break;
         }
         return os;

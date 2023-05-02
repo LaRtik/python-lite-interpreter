@@ -24,6 +24,9 @@
 #include "ast/FunctionalExpression.h"
 #include "ast/FunctionStatement.h"
 #include "ast/FunctionDefineStatement.h"
+#include "ast/ArrayAssignmentStatement.h"
+#include "ast/ArrayGetExpression.h"
+#include "ast/ArrayExpression.h"
 
 namespace parser {
 
@@ -61,6 +64,24 @@ namespace parser {
                 match(TokenType::COMMA);
             }
             return function;
+        }
+
+        Expression *array () {
+            std::vector <Expression*> elements;
+            consume(TokenType::LBRACKET);
+            while (!match(TokenType::RBRACKET)) {
+                elements.push_back(expression());
+                match(TokenType::COMMA);
+            }
+            return new ArrayExpression(elements);
+        }
+
+        Expression *element () {
+            const std::string& variable = consume(TokenType::WORD).getText();
+            consume(TokenType::LBRACKET);
+            Expression *index = expression();
+            consume(TokenType::RBRACKET);
+            return new ArrayGetExpression(variable, index);
         }
 
         Expression * expression() {
@@ -189,10 +210,17 @@ namespace parser {
             if (current.getType() == TokenType::WORD && get(1).getType() == TokenType::LPAREN){
                 return function();
             }
+            if (checkMatch(0, TokenType::WORD) && checkMatch(1, TokenType::LBRACKET)){
+                return element();
+            }
+            if (checkMatch(0, TokenType::LBRACKET)) {
+                return array();
+            }
             if (match(TokenType::WORD))
             {
                 return new ConstantExpression(current.getText());
             }
+
 
             switch (get(-1).getType()) {
                 case TokenType::IF:
@@ -233,6 +261,10 @@ namespace parser {
             return current;
         }
 
+        bool checkMatch(int pos, TokenType type) {
+            return get(pos).getType() == type;
+        }
+
 
         // PARSING STATEMENTS *****
 
@@ -264,10 +296,18 @@ namespace parser {
         Statement *assignmentStatement() {
             // WORD = EXPRESSION
             Token current = get(0);
-            if (match(TokenType::WORD) && get(0).getType() == TokenType::ASSIGN) {
-                const std::string& variable = current.getText();
+            if (checkMatch(0,TokenType::WORD) && checkMatch(1,TokenType::ASSIGN)) {
+                const std::string& variable = consume(TokenType::WORD).getText();
                 consume(TokenType::ASSIGN);
                 return new AssignmentStatement(variable, expression());
+            }
+            if (checkMatch(0, TokenType::WORD) && checkMatch(1, TokenType::LBRACKET)){
+                const std::string& variable = consume(TokenType::WORD).getText();
+                consume(TokenType::LBRACKET);
+                Expression *index = expression();
+                consume(TokenType::RBRACKET);
+                consume(TokenType::ASSIGN);
+                return new ArrayAssignmentStatement(variable, index, expression());
             }
             switch (tokens[pos].getType()) {
                 case TokenType::LBRACE:

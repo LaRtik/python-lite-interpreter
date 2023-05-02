@@ -17,8 +17,8 @@ int main() {
    // Sleep(1000);
     lexer.check();
     tokens = lexer.fix_scopes();
-   // for (const auto& token : tokens) std::cout << token << std::endl;
-   // Sleep(1000);
+    for (const auto& token : tokens) std::cout << token << std::endl;
+    Sleep(1000);
 
 
 

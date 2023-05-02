@@ -9,6 +9,7 @@
 #include "Function.h"
 #include "NumberValue.h"
 #include "StringValue.h"
+#include "ArrayValue.h"
 #include <memory>
 #include <cmath>
 
@@ -35,6 +36,15 @@ namespace parser {
         }
     };
 
+    class FUNCTION_list : public Function {
+        Value * execute(std::vector<Value*> args) override {
+            return new ArrayValue(args);
+        }
+        std::string str(int tabs = 0) override {
+            return "[FUNCTION_list (any)]";
+        }
+    };
+
 
 
     class Functions {
@@ -42,6 +52,7 @@ namespace parser {
         inline static std::map <std::string, Function*> functions {
                 {"sqrt", new FUNCTION_sqrt()},
                 {"print", new FUNCTION_print()},
+                {"list", new FUNCTION_list()},
         };
 
 
