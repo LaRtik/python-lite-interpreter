@@ -329,6 +329,7 @@ namespace parser {
                     std::cout << text[current_line - 1] << std::endl;
                     throw std::runtime_error("Inconsistent braces at line " + std::to_string(current_line));
             }
+            std::cout << text[current_line] << std::endl;
             std::cout << tokens[pos].getType() << std::endl;
             throw std::runtime_error("Unknown statement ");
         }
