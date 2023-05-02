@@ -15,6 +15,8 @@ namespace parser {
         virtual double asDouble() = 0;
 
         virtual std::string asString() = 0;
+
+        virtual int asInt() = 0;
     };
 
 } // parser

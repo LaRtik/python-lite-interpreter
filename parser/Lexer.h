@@ -38,6 +38,7 @@ namespace parser {
                 {",", TokenType::COMMA},
                 {"[", TokenType::LBRACKET},
                 {"]", TokenType::RBRACKET},
+                {"**", TokenType::POW},
         };
         std::string input;
         std::vector <Token> tokens;

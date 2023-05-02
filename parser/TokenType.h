@@ -21,6 +21,7 @@ namespace parser {
         MUL,
         DIV,
         PLUS,
+        POW,
         MINUS,
         ASSIGN,
 
@@ -59,6 +60,136 @@ namespace parser {
         RBRACKET, // ]
         COMMA, // ,
     };
+
+    static std::string str(TokenType type) {
+        switch (type) {
+            case TokenType::NUMBER:
+                return "NUMBER";
+                break;
+            case TokenType::MUL:
+                return "MUL";
+                break;
+            case TokenType::DIV:
+                return "DIV";
+                break;
+            case TokenType::PLUS:
+                return "PLUS";
+                break;
+            case TokenType::MINUS:
+                return "MINUS";
+                break;
+            case TokenType::EOFF :
+                return "EOF";
+                break;
+            case TokenType::LPAREN:
+                return "LPAREN";
+                break;
+            case TokenType::RPAREN:
+                return "RPAREN";
+                break;
+            case TokenType::WORD:
+                return "WORD";
+                break;
+            case TokenType::ASSIGN:
+                return "ASSIGN";
+                break;
+            case TokenType::PRINT:
+                return "PRINT";
+                break;
+            case TokenType::STR:
+                return "STR";
+                break;
+            case TokenType::EQ:
+                return "EQ";
+                break;
+            case TokenType::GT:
+                return "GT";
+                break;
+            case TokenType::GTEQ:
+                return "GTEQ";
+                break;
+            case TokenType::LT:
+                return "LT";
+                break;
+            case TokenType::LTEQ:
+                return "LTEQ";
+                break;
+            case TokenType::IF:
+                return "IF";
+                break;
+            case TokenType::ELSE:
+                return "ELSE";
+                break;
+            case TokenType::EXCL:
+                return "EXCL";
+                break;
+            case TokenType::EXCLEQ:
+                return "EXCLEQ";
+                break;
+            case TokenType::BAR:
+                return "BAR";
+                break;
+            case TokenType::BARBAR:
+                return "BARBAR";
+                break;
+            case TokenType::AMP:
+                return "AMP";
+                break;
+            case TokenType::AMPAMP:
+                return "AMPAMP";
+                break;
+            case TokenType::TAB:
+                return "TAB";
+                break;
+            case TokenType::EOL:
+                return "EOL";
+                break;
+            case TokenType::COLON:
+                return "COLON";
+                break;
+            case TokenType::LBRACE:
+                return "LBRACE";
+                break;
+            case TokenType::RBRACE:
+                return "RBRACE";
+                break;
+            case TokenType::FOR:
+                return "FOR";
+                break;
+            case TokenType::WHILE:
+                return "WHILE";
+                break;
+            case TokenType::BREAK:
+                return "BREAK";
+                break;
+            case TokenType::CONTINUE:
+                return "CONTINUE";
+                break;
+            case TokenType::COMMA:
+                return "COMMA";
+                break;
+            case TokenType::DEF:
+                return "DEF";
+                break;
+            case TokenType::RETURN:
+                return "RETURN";
+                break;
+            case TokenType::LBRACKET:
+                return "LBRACKET";
+                break;
+            case TokenType::RBRACKET:
+                return "RBRACKET";
+                break;
+            case TokenType::FORIN:
+                return "FORIN";
+                break;
+            case TokenType::POW:
+                return "POW";
+                break;
+        }
+        return "";
+
+    }
 
     std::ostream &operator<<(std::ostream &os, const TokenType &type) {
         switch (type) {
@@ -180,6 +311,9 @@ namespace parser {
                 break;
             case TokenType::FORIN:
                 os << "FORIN";
+                break;
+            case TokenType::POW:
+                os << "POW";
                 break;
         }
         return os;

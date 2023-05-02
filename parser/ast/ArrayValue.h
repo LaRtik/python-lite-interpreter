@@ -46,6 +46,10 @@ namespace parser {
             return asString();
         }
 
+        int asInt() override {
+            throw std::runtime_error("Cannot cast array to int");
+        }
+
 
     };
 

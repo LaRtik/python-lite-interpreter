@@ -7,16 +7,19 @@
 
 #include <ostream>
 #include <string>
+#include <cmath>
 #include "Expression.h"
 #include "NumberValue.h"
+#include "IntValue.h"
+#include "StringValue.h"
 
 namespace parser {
 
     class BinaryExpression : public Expression {
         Expression* expr1, *expr2;
-        char operation;
+        TokenType operation;
 
-    public: BinaryExpression(char operation, Expression *expr1, Expression *expr2) {
+    public: BinaryExpression(TokenType operation, Expression *expr1, Expression *expr2) {
             this->expr1 = expr1;
             this->expr2 = expr2;
             this->operation = operation;
@@ -25,12 +28,20 @@ namespace parser {
         Value *eval() const override {
             // todo: add string concatenation
 
-            double number1 = expr1->eval()->asDouble();
-            double number2 = expr2->eval()->asDouble();
+            double number1, number2;
+            try {
+                number1 = expr1->eval()->asDouble();
+                number2 = expr2->eval()->asDouble();
+            } catch (std::invalid_argument) {
+                std::cout << this->str() << std::endl;
+                throw std::runtime_error("Inconsistent types");
+            }
+
             switch (operation) {
-                case '-': return new NumberValue(number1 - number2);
-                case '*': return new NumberValue(number1 * number2);
-                case '/': return new NumberValue(number1 / number2);
+                case TokenType::MINUS: return new NumberValue(number1 - number2);
+                case TokenType::POW: return new NumberValue(pow(number1, number2));
+                case TokenType::MUL: return new NumberValue(number1 * number2);
+                case TokenType::DIV: return new NumberValue(number1 / number2);
                 default:
                     return new NumberValue(number1 + number2);
             }
@@ -46,7 +57,7 @@ namespace parser {
             std::string res;
             res += "[BINARYEXPR]\n ";
             for (int i = 0; i < tab + 1; i++) res += '\t';
-            return res + "[" + expr1->str(tab + 1) + "] " + operation + " [" + expr2->str(tab + 1) + "]";
+            return res + "[" + expr1->str(tab + 1) + "] " + parser::str(operation) + " [" + expr2->str(tab + 1) + "]";
         }
 
 

@@ -29,6 +29,10 @@ namespace parser {
             return std::to_string(value);
         }
 
+        int asInt() override {
+            return int(value);
+        }
+
     };
 
 } // parser

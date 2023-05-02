@@ -148,12 +148,12 @@ namespace parser {
 
             while (true) {
                 if (match(TokenType::PLUS)) {
-                    BinaryExpression *expr = new BinaryExpression('+', result, multiplicative());
+                    BinaryExpression *expr = new BinaryExpression(TokenType::PLUS, result, multiplicative());
                     result = expr;
                     continue;
                 }
                 if (match(TokenType::MINUS)) {
-                    BinaryExpression *expr = new BinaryExpression('-', result, multiplicative());
+                    BinaryExpression *expr = new BinaryExpression(TokenType::MINUS, result, multiplicative());
                     result = expr;
                     continue;
                 }
@@ -168,13 +168,18 @@ namespace parser {
             Expression *result = unary();
 
             while (true) {
+                if (match(TokenType::POW)) {
+                    BinaryExpression *expr = new BinaryExpression(TokenType::POW, result, unary());
+                    result = expr;
+                    continue;
+                }
                 if (match(TokenType::MUL)) {
-                    BinaryExpression *expr = new BinaryExpression('*', result, unary());
+                    BinaryExpression *expr = new BinaryExpression(TokenType::MUL, result, unary());
                     result = expr;
                     continue;
                 }
                 if (match(TokenType::DIV)) {
-                    BinaryExpression *expr = new BinaryExpression('/', result, unary());
+                    BinaryExpression *expr = new BinaryExpression(TokenType::DIV, result, unary());
                     result = expr;
                     continue;
                 }
@@ -256,8 +261,10 @@ namespace parser {
 
         Token consume(TokenType type) {
             Token current = get(0);
-            if (type != current.getType())
-                throw std::runtime_error("Token " + current.getText() + " does not match token type");
+            if (type != current.getType()) {
+                std::cout << text[current_line] << std::endl;
+                throw std::runtime_error("Token " + current.getText() + " does not match token type. Expected " + parser::str(type));
+            }
             pos++;
             return current;
         }

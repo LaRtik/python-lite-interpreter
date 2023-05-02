@@ -13,7 +13,7 @@ namespace parser {
 
     class ArrayAssignmentStatement : public Statement {
         std::string variable;
-        Expression *index = 0;
+        Expression *index;
         Expression *expression;
 
     public: ArrayAssignmentStatement(std::string variable, Expression *index, Expression *expression) {

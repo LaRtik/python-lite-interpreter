@@ -2,32 +2,27 @@
 // Created by ilazu on 01.05.2023.
 //
 
-#ifndef PYTHON_LITE_2_STRINGVALUE_H
-#define PYTHON_LITE_2_STRINGVALUE_H
+#ifndef PYTHON_LITE_2_INTVALUE_H
+#define PYTHON_LITE_2_INTVALUE_H
 
 #include "Expression.h"
 #include <iostream>
 
 namespace parser {
 
-    class StringValue : public Value {
-        std::string value;
+    class IntValue : public Value {
+        int value;
 
-    public: explicit StringValue(std::string value) {
+    public: explicit IntValue(int value) {
             this->value = value;
         }
 
         std::string asString() override {
-            return value;
+            return std::to_string(value);
         }
 
         double asDouble() override {
-            try {
-                return std::stod(value);
-            }
-            catch (std::invalid_argument) {
-                throw std::runtime_error("Inconsistent types");
-            }
+            return double(value);
         }
 
         /*Value eval() const override
@@ -38,14 +33,14 @@ namespace parser {
         }*/
 
         std::string str() const  {
-            return value;
+            return std::to_string(value);
         }
 
         int asInt() override {
-            return std::stoi(value);
+            return value;
         }
     };
 
 } // parser
 
-#endif //PYTHON_LITE_2_STRINGVALUE_H
+#endif //PYTHON_LITE_2_INTVALUE_H
