@@ -13,7 +13,7 @@
 namespace parser {
 
     class Lexer {
-        std::string OPERATOR_CHARS = "+-*/()=<>!&|";
+        std::string OPERATOR_CHARS = "+-*/()=<>!&|{}";
         std::map <std::string, TokenType> OPERATORS {
                 {"+", TokenType::PLUS},
                 {"-", TokenType::MINUS},
@@ -33,6 +33,8 @@ namespace parser {
                 {"&&", TokenType::AMPAMP},
                 {"|", TokenType::BAR},
                 {"||", TokenType::BARBAR},
+                {"{", TokenType::LBRACE},
+                {"}", TokenType::RBRACE},
         };
         std::string input;
         std::vector <Token> tokens;
@@ -43,6 +45,35 @@ namespace parser {
             for (int i = 0; i < pos; i++) std::cout << " ";
             std::cout << "^" << std::endl;
             throw std::runtime_error(text + " at pos " + std::to_string(pos));
+        }
+
+    public: std::vector <Token> fix_scopes() {
+            std::vector <Token> new_tokens;
+            int last_indent = 0;
+            int indent = 0;
+            for (int i = 0; i < this->tokens.size(); i++) {
+                if (this->tokens[i].getType() == TokenType::EOL) {
+                    last_indent = indent;
+                    indent = 0;
+                    i++;
+
+                    while (i < this->tokens.size() && this->tokens[i].getType() == TokenType::TAB) {
+                        indent++;
+                        i++;
+                    }
+                    if (indent > last_indent)
+                    {
+                        for (int j = 0; j < indent - last_indent; j++) new_tokens.emplace_back(TokenType::LBRACE, "");
+                    }
+                    else if (indent < last_indent) {
+                        for (int j = 0; j < last_indent - indent; j++) new_tokens.emplace_back(TokenType::RBRACE, "");
+                    }
+                    if (i < this->tokens.size()) new_tokens.push_back(tokens[i]);
+                }
+                else new_tokens.push_back(tokens[i]);
+            }
+            this->tokens = new_tokens;
+            return tokens;
         }
 
 
@@ -97,6 +128,8 @@ namespace parser {
             if (buffer == "print") addToken(TokenType::PRINT);
             else if (buffer == "if") addToken(TokenType::IF);
             else if (buffer == "else") addToken(TokenType::ELSE);
+            else if (buffer == "for") addToken(TokenType::FOR);
+            else if (buffer == "while") addToken(TokenType::WHILE);
             else addToken(TokenType::WORD, buffer);
         }
 
@@ -125,9 +158,6 @@ namespace parser {
 
         void tokenizeOperator() {
             char current = peek(0);
-            if (current == '/') {
-
-            }
             std::string buffer;
             while (true) {
                 if (!buffer.empty() && OPERATORS.find(buffer + current) == OPERATORS.end()){
@@ -142,7 +172,13 @@ namespace parser {
         std::vector <Token> tokenize() {
             while (pos < length){
                 char current = peek(0);
-                if (std::isdigit(current)) tokenizeNumber();
+                if (current == '\n') { addToken(TokenType::EOL); pos++;
+                    continue;}
+                else if (current == '\t') { addToken(TokenType::TAB); pos++;
+                    continue; }
+               // else if (current == ':') { addToken(TokenType::COLON); pos++;
+                //    continue; }
+                else if (std::isdigit(current)) tokenizeNumber();
                 else if (std::isalpha(current)) tokenizeWord();
                 else if (OPERATOR_CHARS.find(current) != std::string::npos) tokenizeOperator();
                 else if (current == '"') tokenizeString();

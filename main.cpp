@@ -11,15 +11,14 @@ int main() {
     std::cout << text << std::endl;
     parser::Lexer lexer = parser::Lexer(text);
     auto tokens = lexer.tokenize();
-    for (const auto& token : tokens) std::cout << token << std::endl;
+    tokens = lexer.fix_scopes();
+   // for (const auto& token : tokens) std::cout << token << std::endl;
+
 
     parser::Parser pars = parser::Parser(tokens);
     auto expressions = pars.parse();
-    for (auto statement : expressions)
-    {
-        std::cout << statement->str() << std::endl;
-        statement->execute();
-    }
+    std::cout << expressions->str() << std::endl;
+    expressions->execute();
 
     return 0;
 }

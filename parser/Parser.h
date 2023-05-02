@@ -19,6 +19,8 @@
 #include "ast/ConstantExpression.h"
 #include "ast/ConditionalExpression.h"
 #include "ast/IfStatement.h"
+#include "ast/BlockStatement.h"
+#include "ast/WhileStatement.h"
 
 namespace parser {
 
@@ -28,6 +30,7 @@ namespace parser {
         Token eof = Token(TokenType::EOFF, "");
         int pos = 0;
         int size = 0;
+        int indent = 0;
 
         // START PARSING EXPRESSIONS ******
 
@@ -189,29 +192,50 @@ namespace parser {
 
         // PARSING STATEMENTS *****
 
+        Statement *block() {
+            BlockStatement *block = new BlockStatement();
+            consume(TokenType::LBRACE);
+            while (!match(TokenType::RBRACE)) {
+                block->add(statement());
+            }
+            return block;
+
+        }
+
         Statement *statement() {
             if (match(TokenType::PRINT)) return new PrintStatement(expression());
             if (match(TokenType::IF)) return ifElse();
+            if (match(TokenType::WHILE)) return whileStatement();
+            if (match(TokenType::TAB)) { indent++; return statement();}
+            if (match(TokenType::EOL)) { indent = 0; return statement();}
             return assignmentStatement();
         }
 
         Statement *assignmentStatement() {
-            // WORD ASSIGN
+            // WORD = EXPRESSION
             Token current = get(0);
             if (match(TokenType::WORD) && get(0).getType() == TokenType::ASSIGN) {
                 const std::string& variable = current.getText();
                 consume(TokenType::ASSIGN);
                 return new AssignmentStatement(variable, expression());
             }
-            throw std::runtime_error("Unknown statement");
+            std::cout << tokens[pos].getType() << std::endl;
+            throw std::runtime_error("Unknown statement ");
+        }
+
+        Statement *whileStatement() {
+            // WHILE STATEMENT { BLOCK }
+            Expression *condition = expression();
+            Statement *statement = block();
+            return new WhileStatement(condition, statement);
         }
 
         Statement *ifElse() {
             // IF STATEMENT ELSE STATEMENT
             Expression *condition = expression();
-            Statement *ifStatement = statement();
+            Statement *ifStatement = block();
             Statement *elseStatement = nullptr;
-            if (match(TokenType::ELSE)) elseStatement = statement();
+            if (match(TokenType::ELSE)) elseStatement = block();
             return new IfStatement(condition, ifStatement, elseStatement);
         }
 
@@ -219,10 +243,10 @@ namespace parser {
 
 
     public:
-        std::vector <Statement*> parse() {
-            std::vector <Statement*> result;
+        Statement *parse() {
+            BlockStatement *result = new BlockStatement();
             while (!match(TokenType::EOFF)) {
-                result.push_back(statement());
+                result->add(statement());
             }
             return result;
         }

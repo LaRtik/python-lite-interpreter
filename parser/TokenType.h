@@ -33,6 +33,8 @@ namespace parser {
         EXCLEQ,
         IF,
         ELSE,
+        FOR,
+        WHILE,
 
         LPAREN,
         RPAREN,
@@ -43,6 +45,11 @@ namespace parser {
         AMPAMP,
 
         EOFF,
+        TAB,
+        EOL,
+        COLON,
+        LBRACE,
+        RBRACE,
     };
 
     std::ostream &operator<<(std::ostream &os, const TokenType &type) {
@@ -120,6 +127,27 @@ namespace parser {
                 break;
             case TokenType::AMPAMP:
                 os << "AMPAMP";
+                break;
+            case TokenType::TAB:
+                os << "TAB";
+                break;
+            case TokenType::EOL:
+                os << "EOL";
+                break;
+            case TokenType::COLON:
+                os << "COLON";
+                break;
+            case TokenType::LBRACE:
+                os << "LBRACE";
+                break;
+            case TokenType::RBRACE:
+                os << "RBRACE";
+                break;
+            case TokenType::FOR:
+                os << "FOR";
+                break;
+            case TokenType::WHILE:
+                os << "WHILE";
                 break;
         }
         return os;

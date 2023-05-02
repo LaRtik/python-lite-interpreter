@@ -31,7 +31,8 @@ namespace parser {
         }
 
     public: static void set(const std::string& key, Value *value) {
-            variables.insert({key, value});
+            if (isExists(key)) variables[key] = value;
+            else variables.insert({key, value});
         }
     };
 
