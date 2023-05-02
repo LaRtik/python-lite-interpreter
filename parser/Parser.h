@@ -32,25 +32,53 @@ namespace parser {
         // START PARSING EXPRESSIONS ******
 
         Expression * expression() {
-            return conditional();
+            return logical();
+        }
+
+        Expression *logical() {
+            Expression *result = equality();
+            while (true) {
+                if (match(TokenType::BARBAR)) {
+                    result = new ConditionalExpression(ConditionalExpression::Operator::OR, result, equality());
+                    continue;
+                }
+                if (match(TokenType::AMPAMP)) {
+                    result = new ConditionalExpression(ConditionalExpression::Operator::AND, result, equality());
+                    continue;
+                }
+                break;
+            }
+            return result;
+        }
+
+        Expression *equality() {
+            Expression *result = conditional();
+            if (match(TokenType::EQ)) return new ConditionalExpression(ConditionalExpression::Operator::EQUALS, result, conditional());
+            if (match(TokenType::EXCLEQ)) return new ConditionalExpression(ConditionalExpression::Operator::NOT_EQUALS, result, conditional());
+            return result;
         }
 
         Expression *conditional() {
             Expression *result = additive();
 
             while (true) {
-                if (match(TokenType::ASSIGN)) {
-                    ConditionalExpression *expr = new ConditionalExpression('=', result, additive());
+                if (match(TokenType::LT)) {
+                    auto *expr = new ConditionalExpression(ConditionalExpression::Operator::LT, result, additive());
                     result = expr;
                     continue;
                 }
-                if (match(TokenType::LT)) {
-                    ConditionalExpression *expr = new ConditionalExpression('<', result, additive());
+                if (match(TokenType::LTEQ)) {
+                    auto *expr = new ConditionalExpression(ConditionalExpression::Operator::LTEQ, result, additive());
                     result = expr;
                     continue;
                 }
                 if (match(TokenType::GT)) {
-                    ConditionalExpression *expr = new ConditionalExpression('>', result, additive());
+                    auto *expr = new ConditionalExpression(ConditionalExpression::Operator::GT, result, additive());
+                    result = expr;
+                    continue;
+                }
+                if (match(TokenType::GTEQ)) {
+                    auto *expr = new ConditionalExpression(ConditionalExpression::Operator::GTEQ, result, additive());
                     result = expr;
                     continue;
                 }

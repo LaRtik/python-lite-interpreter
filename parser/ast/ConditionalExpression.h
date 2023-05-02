@@ -6,6 +6,7 @@
 #define PYTHON_LITE_2_CONDITIONALEXPRESSION_H
 
 #include <ostream>
+#include <iostream>
 #include <string>
 #include "Expression.h"
 #include "NumberValue.h"
@@ -13,10 +14,31 @@
 namespace parser {
 
     class ConditionalExpression : public Expression {
-        Expression* expr1, *expr2;
-        char operation;
+    public: enum Operator {
+            PLUS,
+            MINUS,
+            MULTIPLY,
+            DIVIDE,
 
-    public: ConditionalExpression(char operation, Expression *expr1, Expression *expr2) {
+            EQUALS,
+            NOT_EQUALS,
+
+            LT,
+            LTEQ,
+            GT,
+            GTEQ,
+
+            AND,
+            OR,
+
+
+        };
+
+        Expression* expr1, *expr2;
+        Operator operation;
+
+
+    public: ConditionalExpression(Operator operation, Expression *expr1, Expression *expr2) {
             this->expr1 = expr1;
             this->expr2 = expr2;
             this->operation = operation;
@@ -28,9 +50,14 @@ namespace parser {
             double number1 = expr1->eval()->asDouble();
             double number2 = expr2->eval()->asDouble();
             switch (operation) {
-                case '=': return new NumberValue(number1 == number2);
-                case '<': return new NumberValue(number1 < number2);
-                case '>': return new NumberValue(number1 > number2);
+                case EQUALS: return new NumberValue(number1 == number2);
+                case NOT_EQUALS: return new NumberValue(number1 != number2);
+                case LT: return new NumberValue(number1 < number2);
+                case LTEQ: return new NumberValue(number1 <= number2);
+                case GT: return new NumberValue(number1 > number2);
+                case GTEQ: return new NumberValue(number1 >= number2);
+                case AND: return new NumberValue(number1 != 0 && number2 != 0);
+                case OR: return new NumberValue(number1 != 0 || number2 != 0);
                 default:
                     return new NumberValue(number1 == number2);
             }
@@ -42,7 +69,7 @@ namespace parser {
         }
 
         std::string str() const override {
-            return expr1->str() + " " + operation + " " + expr2->str();
+            return expr1->str() + " " + std::to_string(operation) + " " + expr2->str();
         }
 
 

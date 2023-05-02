@@ -8,21 +8,31 @@
 #include <string>
 #include "Token.h"
 #include <vector>
+#include <map>
 
 namespace parser {
 
     class Lexer {
-        std::string OPERATOR_CHARS = "+-*/()=<>";
-        std::vector <TokenType> OPERATOR_TOKENS {
-            TokenType::PLUS,
-            TokenType::MINUS,
-            TokenType::MUL,
-            TokenType::DIV,
-            TokenType::LPAREN,
-            TokenType::RPAREN,
-            TokenType::ASSIGN,
-            TokenType::LT,
-            TokenType::GT
+        std::string OPERATOR_CHARS = "+-*/()=<>!&|";
+        std::map <std::string, TokenType> OPERATORS {
+                {"+", TokenType::PLUS},
+                {"-", TokenType::MINUS},
+                {"*", TokenType::MUL},
+                {"/", TokenType::DIV},
+                {"(", TokenType::LPAREN},
+                {")", TokenType::RPAREN},
+                {"=", TokenType::ASSIGN},
+                {"==", TokenType::EQ},
+                {"<", TokenType::LT},
+                {"<=", TokenType::LTEQ},
+                {">", TokenType::GT},
+                {">=", TokenType::GTEQ},
+                {"!", TokenType::EXCL},
+                {"!=", TokenType::EXCLEQ},
+                {"&", TokenType::AMP},
+                {"&&", TokenType::AMPAMP},
+                {"|", TokenType::BAR},
+                {"||", TokenType::BARBAR},
         };
         std::string input;
         std::vector <Token> tokens;
@@ -114,9 +124,19 @@ namespace parser {
         }
 
         void tokenizeOperator() {
-            int position = OPERATOR_CHARS.find(peek(0));
-            addToken(OPERATOR_TOKENS[position]);
-            next();
+            char current = peek(0);
+            if (current == '/') {
+
+            }
+            std::string buffer;
+            while (true) {
+                if (!buffer.empty() && OPERATORS.find(buffer + current) == OPERATORS.end()){
+                    addToken(OPERATORS[buffer]);
+                    return;
+                }
+                buffer += current;
+                current = next();
+            }
         }
 
         std::vector <Token> tokenize() {
