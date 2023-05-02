@@ -1,2 +1,3 @@
-b = 10
-print(sqrt(b))
+def sum(a, b):
+	return a + b
+print(sum(10, 15))

@@ -23,6 +23,7 @@
 #include "ast/WhileStatement.h"
 #include "ast/FunctionalExpression.h"
 #include "ast/FunctionStatement.h"
+#include "ast/FunctionDefineStatement.h"
 
 namespace parser {
 
@@ -35,6 +36,19 @@ namespace parser {
         int indent = 0;
         std::vector <std::string> text;
         int current_line = 0;
+
+
+        FunctionDefineStatement *functionDefine () {
+            std::string name = consume(TokenType::WORD).getText();
+            consume(TokenType::LPAREN);
+            std::vector <std::string> argNames;
+            while (!match(TokenType::RPAREN)) {
+                argNames.push_back(consume(TokenType::WORD).getText());
+                match(TokenType::COMMA);
+            }
+            Statement* body = block();
+            return new FunctionDefineStatement(name, argNames, body);
+        }
 
         // START PARSING EXPRESSIONS ******
 
@@ -237,9 +251,11 @@ namespace parser {
             if (get(0).getType() == TokenType::WORD && get(1).getType() == TokenType::LPAREN)
                 return new FunctionStatement(function());
             if (match(TokenType::IF)) return ifElse();
+            if (match(TokenType::DEF)) return functionDefine();
             if (match(TokenType::WHILE)) return whileStatement();
             if (match(TokenType::BREAK)) return new BreakStatement();
             if (match(TokenType::CONTINUE)) return new ContinueStatement();
+            if (match(TokenType::RETURN)) return new ReturnStatement(expression());
             if (match(TokenType::TAB)) { indent++; return statement();}
             if (match(TokenType::EOL)) { indent = 0; return statement();}
             return assignmentStatement();

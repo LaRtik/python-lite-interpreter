@@ -27,14 +27,13 @@ namespace parser {
         Value * execute(std::vector<Value*> args) override {
             std::string result;
             for (auto arg : args) result += arg->asString() + " ";
-            std::cout << result;
+            std::cout << result << std::endl;
             return new StringValue(result);
         }
         std::string str(int tabs = 0) override {
             return "[FUNCTION_print (any)]";
         }
     };
-
 
 
 

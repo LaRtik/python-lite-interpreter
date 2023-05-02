@@ -130,8 +130,10 @@ namespace parser {
             if (buffer == "if") addToken(TokenType::IF);
             else if (buffer == "else") addToken(TokenType::ELSE);
             else if (buffer == "for") addToken(TokenType::FOR);
+            else if (buffer == "def") addToken(TokenType::DEF);
             else if (buffer == "while") addToken(TokenType::WHILE);
             else if (buffer == "break") addToken(TokenType::BREAK);
+            else if (buffer == "return") addToken(TokenType::RETURN);
             else if (buffer == "continue") addToken(TokenType::CONTINUE);
             else addToken(TokenType::WORD, buffer);
         }

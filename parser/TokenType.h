@@ -37,6 +37,8 @@ namespace parser {
         WHILE,
         BREAK,
         CONTINUE,
+        DEF,
+        RETURN,
 
         LPAREN,
         RPAREN,
@@ -160,6 +162,12 @@ namespace parser {
                 break;
             case TokenType::COMMA:
                 os << "COMMA";
+                break;
+            case TokenType::DEF:
+                os << "DEF";
+                break;
+            case TokenType::RETURN:
+                os << "RETURN";
                 break;
         }
         return os;

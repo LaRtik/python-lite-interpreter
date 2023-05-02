@@ -11,10 +11,13 @@
 #include <map>
 #include <utility>
 #include <memory>
+#include <stack>
 
 namespace parser {
     class Variables {
         inline static NumberValue *NULL_NUMBER = new NumberValue(0.0);
+
+        inline static std::stack <std::map <std::string, Value*> > stack;
 
         inline static std::map <std::string, Value*> variables {
                 {"PI", new NumberValue(3.14)}
@@ -34,6 +37,16 @@ namespace parser {
             if (isExists(key)) variables[key] = value;
             else variables.insert({key, value});
         }
+
+        static void push() {
+            stack.emplace(variables);
+        }
+
+        static void pop() {
+            variables = stack.top();
+            stack.pop();
+        }
+
     };
 
 
